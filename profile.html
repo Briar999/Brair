@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>个人主页 · 绣衣楼攻略集</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="index.css">
+    <style>
+        .profile-container {
+            min-height: 100vh;
+            padding-top: 120px;
+            text-align: center;
+        }
+        .welcome-card {
+            background: rgba(30, 25, 22, 0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 32px;
+            border: 1px solid rgba(198, 158, 98, 0.4);
+            padding: 40px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #b68953, #9a6e3e);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+        .user-avatar i {
+            font-size: 40px;
+            color: #f3e2b5;
+        }
+        .user-email {
+            font-size: 1.2rem;
+            color: #dba46a;
+            margin-bottom: 20px;
+        }
+        .logout-btn {
+            background: none;
+            border: 1px solid #b68953;
+            padding: 8px 24px;
+            border-radius: 30px;
+            color: #f1dead;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .logout-btn:hover {
+            background: #b68953;
+            color: #1f1b16;
+        }
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: #8a7a64;
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar-wrapper">
+    <div class="nav-inner">
+        <div class="logo-area">
+            <h1>绣衣楼·攻略集</h1>
+            <p>代号鸢 | 如鸢 · 权谋深处见真情</p>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">首页</a></li>
+                <li><a href="index.html#cultivate">密探培养</a></li>
+                <li><a href="index.html#team">关卡配队</a></li>
+                <li><a href="index.html#events">楼中雅集</a></li>
+                <li><a href="profile.html">个人主页</a></li>
+                <li><a href="#" id="logoutBtn">退出</a></li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<div class="profile-container" id="profileContainer">
+    <div class="loading">加载中...</div>
+</div>
+
+<footer style="margin-top: 60px;">
+    <p>绣衣楼愿为殿下尽绵薄之力</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+    const SUPABASE_URL = 'https://qwddwbwgichjhrxmswgk.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_nq5d-vnTaJ46JA0MfY-qmQ_kUqPi-Sq';
+    
+    const _supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    
+    async function checkUser() {
+        const { data: { user } } = await _supabaseClient.auth.getUser();
+        const container = document.getElementById('profileContainer');
+        
+        if (!user) {
+            // 未登录：显示提示，不自动跳转
+            container.innerHTML = `
+                <div class="welcome-card">
+                    <div class="user-avatar"><i class="fas fa-user-circle"></i></div>
+                    <h2>未登录</h2>
+                    <p style="color: #8a7a64; margin: 20px 0;">请先登录后再访问个人主页</p>
+                    <a href="login.html" style="color: #dba46a;">前往登录 →</a>
+                </div>
+            `;
+            return;
+        }
+        
+        // 已登录：显示用户信息
+        const nickname = user.user_metadata?.username || user.email?.split('@')[0] || '殿下';
+        container.innerHTML = `
+            <div class="welcome-card">
+                <div class="user-avatar"><i class="fas fa-user-circle"></i></div>
+                <h2 id="welcomeTitle">绣衣楼 · ${escapeHtml(nickname)}</h2>
+                <div class="user-email">${escapeHtml(user.email || '未绑定邮箱')}</div>
+                <p style="color: #8a7a64; margin-top: 20px;">✨ 攻略上传功能正在建设中，敬请期待 ✨</p>
+                <button class="logout-btn" id="logoutBtnAction">退出登录</button>
+            </div>
+        `;
+        
+        document.getElementById('logoutBtnAction').addEventListener('click', async () => {
+            await _supabaseClient.auth.signOut();
+            window.location.href = 'index.html';
+        });
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+    
+    checkUser();
+    
+    // 导航栏退出按钮
+    const navLogoutBtn = document.getElementById('logoutBtn');
+    if (navLogoutBtn) {
+        navLogoutBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            await _supabaseClient.auth.signOut();
+            window.location.href = 'index.html';
+        });
+    }
+</script>
+</body>
+</html>
