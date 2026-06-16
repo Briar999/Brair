@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>如鸢 · 绣衣楼攻略集</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="index.css">
+    <style>
+        body {
+            padding-top: 80px;
+            padding-bottom: 80px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 25px;
+        }
+        /* 导航栏返回按钮样式 */
+        .nav-back-btn {
+            color: #f6e2bd;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 20px;
+            border: 1px solid rgba(218, 164, 106, 0.5);
+            border-radius: 24px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            background: rgba(218, 164, 106, 0.1);
+            backdrop-filter: blur(4px);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .nav-back-btn:hover {
+            border-color: #dba46a;
+            color: #dba46a;
+            background: rgba(218, 164, 106, 0.15);
+            transform: translateX(-2px);
+            box-shadow: 0 0 15px rgba(218, 164, 106, 0.2);
+        }
+        .img-wrap {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 32px;
+        width: 100%;
+        height: 500px;          /* 固定容器高度，根据需要调整 */
+        background: rgba(0, 0, 0, 0.15);
+        border-radius: 12px;
+        overflow: hidden;
+        }
+        .img-wrap img {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+        #detailBigImg {
+        width: 100%;
+        height: 100%;           /* 填满容器 */
+        object-fit: contain; 
+        transform: scale(1.6);   /* 保持比例，完整显示 */
+        border-radius: 12px;
+        }
+        .base-info {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid rgba(200, 160, 100, 0.3);
+        }
+        .base-info h2 {
+            font-size: 2rem;
+            margin-bottom: 12px;
+            color: #f6e2bd;
+            background: linear-gradient(120deg, #f0dab2, #d3a871);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .tag-line {
+            font-size: 16px;
+            color: #a89878;
+            margin-bottom: 16px;
+        }
+        .tag-line span {
+            color: #dba46a;
+        }
+        .block {
+            margin: 32px 0;
+            padding: 20px 24px;
+            background: rgba(30, 25, 22, 0.5);
+            backdrop-filter: blur(4px);
+            border-radius: 16px;
+            border: 1px solid rgba(200, 160, 100, 0.2);
+        }
+        .block h3 {
+            font-size: 1.3rem;
+            border-left: 4px solid #dba46a;
+            padding-left: 12px;
+            margin-bottom: 16px;
+            color: #f6e2bd;
+        }
+        .text-item {
+            line-height: 1.8;
+            font-size: 15px;
+            margin: 10px 0;
+            color: #d9cfb4;
+        }
+        .text-item strong {
+            color: #e5bc83;
+            margin-right: 8px;
+        }
+        .fate-item {
+            padding: 16px;
+            background: rgba(20, 18, 22, 0.6);
+            border-radius: 12px;
+            margin: 12px 0;
+            border: 1px solid rgba(200, 160, 100, 0.2);
+        }
+        .fate-item h4 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: #f6e2bd;
+        }
+        .fate-item p {
+            color: #a89878;
+            line-height: 1.6;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 12px;
+        }
+        td {
+            border: 1px solid rgba(200, 160, 100, 0.3);
+            padding: 12px;
+            text-align: center;
+            background: rgba(20, 18, 22, 0.4);
+        }
+        td img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 6px;
+        }
+        td div {
+            color: #d9cfb4;
+            font-size: 0.85rem;
+        }
+        .team-item {
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(20, 18, 22, 0.6);
+            border-radius: 12px;
+            border: 1px solid rgba(200, 160, 100, 0.2);
+        }
+        .team-item h4 {
+            color: #f6e2bd;
+            margin-bottom: 8px;
+        }
+        .team-item p {
+            color: #a89878;
+            margin-bottom: 12px;
+        }
+        .link-btn {
+            padding: 8px 16px;
+            background: #b68953;
+            color: #1f1b16;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 12px;
+            display: none;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        .link-btn:hover {
+            background: #dba46a;
+        }
+        @media (max-width: 768px) {
+            td img {
+                width: 50px;
+                height: 50px;
+            }
+        }
+        /* 分段朗读按钮 */
+        .read-section-btn {
+            background: none;
+            border: 1px solid #b68953;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            color: #f1dead;
+            font-size: 14px;
+            transition: 0.2s;
+            vertical-align: middle;
+            margin-left: 12px;
+        }
+        .read-section-btn:hover {
+            background: #b68953;
+            color: #1f1b16;
+        }
+        .read-section-btn.active {
+            border-color: #dba46a;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 导航栏：只显示返回按钮 + 头像 -->
+<div class="navbar-wrapper" id="navbar">
+    <div class="nav-inner">
+        <div class="logo-area">
+            <h1>绣衣楼·攻略集</h1>
+            <p>代号鸢 | 如鸢 · 权谋深处见真情</p>
+        </div>
+        <div class="nav-right">
+            <!-- 返回密探列表按钮 -->
+            <a href="spy_list.html" class="nav-back-btn">← 返回密探列表</a>
+            <!-- 头像 -->
+            <div id="navAvatarContainer">
+                <img id="navAvatar" src="" alt="头像" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid #b68953; cursor: pointer; display: none;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="img-wrap">
+        <img id="detailBigImg" alt="密探详情大图">
+    </div>
+
+    <div class="base-info">
+        <h2 id="spyName"></h2>
+        <div class="tag-line">
+            属性：<span id="spyElement"></span>　职业：<span id="spyCareer"></span>
+        </div>
+        <button id="link-btn" class="link-btn">跳转关联模块资料</button>
+    </div>
+
+    <div class="block">
+        <h3>战斗能力</h3>
+        <div class="text-item"><strong>普攻：</strong><span id="normalAttack"></span></div>
+        <div class="text-item"><strong>技能：</strong><span id="skill"></span></div>
+        <div class="text-item"><strong>队长技能：</strong><span id="leaderSkill"></span></div>
+        <div class="text-item"><strong>一星天赋：</strong><span id="star1Talent"></span></div>
+        <div class="text-item"><strong>二星天赋：</strong><span id="star2Talent"></span></div>
+        <div class="text-item"><strong>初始天赋：</strong><span id="initTalent"></span></div>
+        <div class="text-item"><strong>星石搭配：</strong><span id="starStone"></span></div>
+        <div class="text-item"><strong>漆园蝶推荐：</strong><span id="qiyuanDie"></span></div>
+    </div>
+
+    <div class="block">
+        <h3>命盘推荐</h3>
+        <div id="fateDiskBox"></div>
+    </div>
+
+    <div class="block">
+        <h3>阵容推荐</h3>
+        <div id="teamBox"></div>
+    </div>
+</div>
+
+<!-- 固定底部版权栏 -->
+<div class="footer-bar">
+    <div class="footer-bar-content">
+        <p>非官方攻略站 · 图片版权归灵犀互娱所有 | 绣衣楼愿为殿下尽绵薄之力</p>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+    (function() {
+        const SUPABASE_URL = 'https://qwddwbwgichjhrxmswgk.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_nq5d-vnTaJ46JA0MfY-qmQ_kUqPi-Sq';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function loadNavbarAvatar() {
+            const { data: { user } } = await supabase.auth.getUser();
+            const DEFAULT_AVATAR_URL = 'https://qwddwbwgichjhrxmswgk.supabase.co/storage/v1/object/public/avatars/1.png';
+            const navAvatar = document.getElementById('navAvatar');
+            if (user && navAvatar) {
+                navAvatar.src = user.user_metadata?.avatar_url || DEFAULT_AVATAR_URL;
+                navAvatar.style.display = 'block';
+                navAvatar.onclick = () => window.location.href = 'profile.html';
+            } else if (navAvatar) {
+                navAvatar.style.display = 'none';
+            }
+        }
+
+        async function loadSpyDetail() {
+            const urlParams = new URLSearchParams(location.search);
+            const spyId = urlParams.get('id');
+            if (!spyId) {
+                alert('未获取到密探ID，返回列表页');
+                window.location.href = 'spy_list.html';
+                return;
+            }
+
+            const { data: mainData, error: mainErr } = await supabase
+                .from('spy_info')
+                .select('*')
+                .eq('id', spyId)
+                .single();
+            if (mainErr) {
+                console.error('查询密探详情失败', mainErr);
+                return;
+            }
+
+            const getImgUrl = (path) => {
+                if (!path) return '';
+                if (path.startsWith('http')) return path;
+                return supabase.storage.from('spy-images').getPublicUrl(path).data.publicUrl;
+            };
+            const detailImgUrl = getImgUrl(mainData.detail_img);
+
+            document.getElementById('detailBigImg').src = detailImgUrl;
+            document.getElementById('spyName').innerText = mainData.spy_name;
+            document.getElementById('spyElement').innerText = mainData.element;
+            document.getElementById('spyCareer').innerText = mainData.career;
+            document.getElementById('normalAttack').innerText = mainData.normal_attack || '暂无';
+            document.getElementById('skill').innerText = mainData.skill || '暂无';
+            document.getElementById('leaderSkill').innerText = mainData.leader_skill || '暂无';
+            document.getElementById('star1Talent').innerText = mainData.star1_talent || '暂无';
+            document.getElementById('star2Talent').innerText = mainData.star2_talent || '暂无';
+            document.getElementById('initTalent').innerText = mainData.init_talent || '暂无';
+            document.getElementById('starStone').innerText = mainData.star_stone || '暂无';
+            document.getElementById('qiyuanDie').innerText = mainData.qi_yuan_die || '暂无';
+
+            const linkBtn = document.getElementById('link-btn');
+            if (mainData.target_module_id) {
+                linkBtn.style.display = 'inline-block';
+                linkBtn.onclick = () => {
+                    window.location.href = `other-module.html?id=${mainData.target_module_id}`;
+                };
+            }
+
+            const { data: fateList } = await supabase
+                .from('spy_fate_disk')
+                .select('*')
+                .eq('spy_id', spyId)
+                .order('sort_num', { ascending: true });
+            let fateHtml = '';
+            if (fateList.length === 0) {
+                fateHtml = '<p>暂无命盘推荐</p>';
+            } else {
+                fateList.forEach(item => {
+                    fateHtml += `
+                        <div class="fate-item">
+                            <h4>${item.disk_name}</h4>
+                            <p>${item.disk_desc}</p>
+                        </div>
+                    `;
+                });
+            }
+            document.getElementById('fateDiskBox').innerHTML = fateHtml;
+
+            const { data: teamList } = await supabase
+                .from('spy_team')
+                .select('*')
+                .eq('spy_id', spyId)
+                .order('sort_num', { ascending: true });
+            let teamHtml = '';
+            if (teamList.length === 0) {
+                teamHtml = '<p>暂无阵容推荐</p>';
+            } else {
+                for (const team of teamList) {
+                    const memberIds = team.member_spy_ids ? team.member_spy_ids.split(',') : [];
+                    const { data: memberData } = await supabase
+                        .from('spy_info')
+                        .select('id, spy_name, list_img')
+                        .in('id', memberIds);
+
+                    let tdHtml = '';
+                    memberData.forEach(m => {
+                        const memberImgUrl = getImgUrl(m.list_img);
+                        tdHtml += `
+                            <td>
+                                <img src="${memberImgUrl}" alt="${m.spy_name}">
+                                <div>${m.spy_name}</div>
+                            </td>
+                        `;
+                    });
+                    teamHtml += `
+                        <div class="team-item">
+                            <h4>${team.team_name}</h4>
+                            <p style="margin:8px 0;">${team.team_desc}</p>
+                            <table>
+                                <tr>${tdHtml}</tr>
+                            </table>
+                        </div>
+                    `;
+                }
+            }
+            document.getElementById('teamBox').innerHTML = teamHtml;
+        }
+
+        window.onload = () => {
+            loadNavbarAvatar();
+            loadSpyDetail();
+            addReadButtons();
+        };
+    })();
+    // ========== 分段朗读功能（点击同一按钮开始/停止） ==========
+function addReadButtons() {
+    const blocks = document.querySelectorAll('.block');
+    blocks.forEach(block => {
+        if (block.querySelector('.read-section-btn')) return;
+        const h3 = block.querySelector('h3');
+        if (!h3) return;
+
+        const btn = document.createElement('button');
+        btn.className = 'read-section-btn';
+        btn.innerHTML = '🔊';
+        btn.title = '点击朗读此部分，再次点击停止';
+
+        // 存储当前章节的文本内容
+        let sectionContent = '';
+
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+
+            // 如果当前按钮正在朗读 → 停止
+            if (this.classList.contains('active')) {
+                if (window.speechSynthesis.speaking) {
+                    window.speechSynthesis.cancel();
+                }
+                this.innerHTML = '🔊';
+                this.classList.remove('active');
+                return;
+            }
+
+            // 如果有其他内容正在朗读，先停止
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                // 重置所有按钮状态
+                document.querySelectorAll('.read-section-btn').forEach(b => {
+                    b.innerHTML = '🔊';
+                    b.classList.remove('active');
+                });
+            }
+
+            // 收集当前章节的所有文本
+            const textItems = block.querySelectorAll('.text-item, .fate-item, .team-item, .fate-item p, .team-item p');
+            let content = '';
+            textItems.forEach(el => {
+                const txt = el.innerText.trim();
+                if (txt && txt !== '暂无') {
+                    content += txt + '。';
+                }
+            });
+
+            if (!content) {
+                alert('该部分暂无详细内容可朗读。');
+                return;
+            }
+
+            sectionContent = content;
+
+            // 创建语音对象
+            const utterance = new SpeechSynthesisUtterance(content);
+            utterance.lang = 'zh-CN';
+            utterance.rate = 1.0;
+            utterance.pitch = 1.0;
+            utterance.volume = 1.0;
+
+            // 设置中文语音
+            const voices = window.speechSynthesis.getVoices();
+            const chineseVoice = voices.find(voice => voice.lang.includes('zh'));
+            if (chineseVoice) utterance.voice = chineseVoice;
+
+            // 按钮状态：正在朗读
+            this.innerHTML = '⏹';
+            this.classList.add('active');
+
+            // 开始朗读
+            window.speechSynthesis.speak(utterance);
+
+            // 朗读结束恢复按钮
+            utterance.onend = () => {
+                this.innerHTML = '🔊';
+                this.classList.remove('active');
+            };
+            utterance.onerror = () => {
+                this.innerHTML = '🔊';
+                this.classList.remove('active');
+            };
+        });
+
+        h3.parentNode.insertBefore(btn, h3.nextSibling);
+    });
+}
+</script>
+</body>
+</html>

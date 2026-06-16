@@ -114,16 +114,21 @@
             <h1>绣衣楼·攻略集</h1>
             <p>代号鸢 | 如鸢 · 权谋深处见真情</p>
         </div>
-        <nav>
-            <ul>
-                <li><a href="index.html">首页</a></li>
-                <li><a href="index.html#cultivate">密探培养</a></li>
-                <li><a href="index.html#team">关卡配队</a></li>
-                <li><a href="index.html#events">楼中雅集</a></li>
-                <li><a href="profile.html" id="navProfile" style="display:none;">个人主页</a></li>
-                <li><a href="login.html" id="navAuth">登录</a></li>
-            </ul>
-        </nav>
+        <div class="nav-right">
+            <nav>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="index.html#cultivate">密探培养</a></li>
+                    <li><a href="index.html#team">关卡配队</a></li>
+                    <li><a href="index.html#events">楼中雅集</a></li>
+                    <li><a href="profile.html" id="navProfile" style="display:none;">个人主页</a></li>
+                    <li><a href="login.html" id="navAuth">登录</a></li>
+                </ul>
+            </nav>
+            <div id="navAvatarContainer">
+                <img id="navAvatar" src="" alt="头像" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid #b68953; cursor: pointer; display: none;">
+            </div>
+        </div>
     </div>
 </div>
 
@@ -153,6 +158,13 @@
         
         <div class="msg-area" id="msgArea"></div>
         
+        <div style="margin: 16px 0; text-align: center; position: relative;">
+            <span style="background: rgba(30,25,22,0.85); padding: 0 12px; color: #8a7a64; font-size: 0.8rem;">或</span>
+        </div>
+        <button class="btn-login" id="passkeyLoginBtn" style="background: linear-gradient(135deg, #6c5ce7, #a29bfe);">
+            🔐 人脸/指纹登录
+        </button>
+        
         <div class="switch-mode">
             <span id="switchText">还没有账号？</span>
             <a id="switchLink">立即注册</a>
@@ -164,34 +176,38 @@
     </div>
 </div>
 
-<!-- 只引入一次 Supabase SDK -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.0/dist/umd/supabase.js"></script>
 <script>
-    // 使用唯一的变量名 _supabaseClient 避免全局冲突
-    const SUPABASE_URL = 'https://qwddwbwgichjhrxmswgk.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable_nq5d-vnTaJ46JA0MfY-qmQ_kUqPi-Sq';
+    var SUPABASE_URL = 'https://qwddwbwgichjhrxmswgk.supabase.co';
+    var SUPABASE_ANON_KEY = 'sb_publishable_nq5d-vnTaJ46JA0MfY-qmQ_kUqPi-Sq';
     
-    // 创建客户端
-    const _supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    var _supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+        auth: {
+            experimental: {
+                passkey: true
+            }
+        }
+    });
     
-    let isLoginMode = true;
+    var isLoginMode = true;
     
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
-    const nicknameInput = document.getElementById('nickname');
-    const nicknameGroup = document.getElementById('nicknameGroup');
-    const submitBtn = document.getElementById('submitBtn');
-    const formTitle = document.getElementById('formTitle');
-    const formSubtitle = document.getElementById('formSubtitle');
-    const switchText = document.getElementById('switchText');
-    const switchLink = document.getElementById('switchLink');
-    const msgArea = document.getElementById('msgArea');
+    var emailInput = document.getElementById('email');
+    var passwordInput = document.getElementById('password');
+    var nicknameInput = document.getElementById('nickname');
+    var nicknameGroup = document.getElementById('nicknameGroup');
+    var submitBtn = document.getElementById('submitBtn');
+    var formTitle = document.getElementById('formTitle');
+    var formSubtitle = document.getElementById('formSubtitle');
+    var switchText = document.getElementById('switchText');
+    var switchLink = document.getElementById('switchLink');
+    var msgArea = document.getElementById('msgArea');
     
-    function showMessage(msg, isError = true) {
+    function showMessage(msg, isError) {
+        if (isError === undefined) isError = true;
         msgArea.textContent = msg;
         msgArea.className = 'msg-area ' + (isError ? 'msg-error' : 'msg-success');
         msgArea.style.display = 'block';
-        setTimeout(() => {
+        setTimeout(function() {
             msgArea.style.display = 'none';
         }, 3000);
     }
@@ -216,36 +232,30 @@
         console.log('当前模式:', isLoginMode ? '登录' : '注册');
     }
     
-    switchLink.addEventListener('click', (e) => {
+    switchLink.addEventListener('click', function(e) {
         e.preventDefault();
         switchMode();
     });
     
-    // 登录
     async function handleLogin() {
-        const email = emailInput.value.trim();
-        const password = passwordInput.value;
-        
+        var email = emailInput.value.trim();
+        var password = passwordInput.value;
         if (!email || !password) {
             showMessage('请填写邮箱和密码');
             return;
         }
-        
         submitBtn.disabled = true;
         submitBtn.textContent = '登录中...';
-        
         try {
-            const { data, error } = await _supabaseClient.auth.signInWithPassword({
+            var result = await _supabaseClient.auth.signInWithPassword({
                 email: email,
                 password: password
             });
-            
-            if (error) throw error;
-            
+            if (result.error) throw result.error;
             showMessage('登录成功！正在跳转...', false);
-        setTimeout(() => {
-        window.location.href = 'index.html';
-        }, 1000);
+            setTimeout(function() {
+                window.location.href = 'index.html';
+            }, 1000);
         } catch (error) {
             showMessage('登录失败：' + (error.message || '邮箱或密码错误'));
             submitBtn.disabled = false;
@@ -253,27 +263,22 @@
         }
     }
     
-    // 注册
     async function handleRegister() {
-        const email = emailInput.value.trim();
-        const password = passwordInput.value;
-        const nickname = nicknameInput.value.trim();
-        
+        var email = emailInput.value.trim();
+        var password = passwordInput.value;
+        var nickname = nicknameInput.value.trim();
         if (!email || !password) {
             showMessage('请填写邮箱和密码');
             return;
         }
-        
         if (password.length < 6) {
             showMessage('密码长度至少6位');
             return;
         }
-        
         submitBtn.disabled = true;
         submitBtn.textContent = '注册中...';
-        
         try {
-            const { data, error } = await _supabaseClient.auth.signUp({
+            var result = await _supabaseClient.auth.signUp({
                 email: email,
                 password: password,
                 options: {
@@ -282,12 +287,10 @@
                     }
                 }
             });
-            
-            if (error) throw error;
-            
-            if (data.user) {
+            if (result.error) throw result.error;
+            if (result.data.user) {
                 showMessage('注册成功！请登录', false);
-                setTimeout(() => {
+                setTimeout(function() {
                     switchMode();
                     emailInput.value = email;
                     passwordInput.value = '';
@@ -307,7 +310,7 @@
         }
     }
     
-    submitBtn.addEventListener('click', () => {
+    submitBtn.addEventListener('click', function() {
         if (isLoginMode) {
             handleLogin();
         } else {
@@ -315,16 +318,38 @@
         }
     });
     
-    document.addEventListener('keypress', (e) => {
+    document.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             if (isLoginMode) handleLogin();
             else handleRegister();
         }
     });
     
-    // 检查是否已登录
-    _supabaseClient.auth.getSession().then(({ data }) => {
-        if (data.session) {
+    // ===== Passkey 登录（一步式 API） =====
+    document.getElementById('passkeyLoginBtn').addEventListener('click', async function() {
+        console.log('✅ Passkey 登录按钮被点击');
+        try {
+            if (!window.PublicKeyCredential) {
+                alert('您的浏览器不支持 WebAuthn');
+                return;
+            }
+            console.log('开始 Passkey 登录...');
+            // ⭐ 一步式 API：直接调用 signInWithPasskey
+            var result = await _supabaseClient.auth.signInWithPasskey();
+            if (result.error) throw result.error;
+            console.log('登录成功:', result.data);
+            showMessage('✅ 登录成功！正在跳转...', false);
+            setTimeout(function() {
+                window.location.href = 'index.html';
+            }, 1000);
+        } catch (error) {
+            console.error('❌ 登录失败:', error);
+            showMessage('❌ 登录失败: ' + error.message);
+        }
+    });
+    
+    _supabaseClient.auth.getSession().then(function(result) {
+        if (result.data.session) {
             window.location.href = 'profile.html';
         }
     });

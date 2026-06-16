@@ -19,16 +19,21 @@
             <h1>绣衣楼·攻略集</h1>
             <p>代号鸢 | 如鸢 · 权谋深处见真情</p>
         </div>
-       <nav>
-    <ul>
-        <li><a href="#">首页</a></li>
-        <li><a href="#cultivate">密探培养</a></li>
-        <li><a href="#team">关卡配队</a></li>
-        <li><a href="#events">楼中雅集</a></li>
-        <li><a href="profile.html">个人主页</a></li>
-        <li><a href="#" id="logoutBtn">退出</a></li>
-    </ul>
-</nav>
+        <div class="nav-right">
+            <nav>
+                <ul>
+                    <li><a href="#">首页</a></li>
+                    <li><a href="#cultivate">密探培养</a></li>
+                    <li><a href="#team">编队生成器</a></li>
+                    <li><a href="#guide">关卡攻略</a></li>
+                    <li><a href="#events">活动公告</a></li>
+                    <li><a href="profile.html">个人主页</a></li>
+                </ul>
+            </nav>
+            <div id="navAvatarContainer">
+                <img id="navAvatar" src="" alt="头像" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid #b68953; cursor: pointer; display: none;">
+            </div>
+        </div>
     </div>
 </div>
 
@@ -60,40 +65,72 @@
     <div class="swiper-button-next"></div>
     <div class="swiper-button-prev"></div>
     <div class="swiper-pagination"></div>
-
-    <!-- 海报底部栏 -->
-    <div class="footer-bar">
-        <div class="footer-bar-content">
-            <p>非官方攻略站 · 图片版权归灵犀互娱所有 | 绣衣楼愿为殿下尽绵薄之力</p>
-        </div>
-    </div>
 </div>
 
 <!-- 下方内容区域 -->
 <div class="content-wrapper">
     <div class="container">
-        <div id="cultivate" class="section-title"><span>✦ 密探培养 · 命盘至臻 ✦</span></div>
-        <div class="grid-3">
-            <div class="card"><div class="card-img"><img src="https://picsum.photos/id/237/400/240" alt="风属性"></div><div class="card-content"><h3>风 · 迅捷灵动</h3><div class="tag-list"><span class="tag">高速先手</span><span class="tag">连击增伤</span></div><p>代表密探：杨修、孙尚香，高速出手，多段连击，快速清场。</p><button class="btn-more">查看配置 →</button></div></div>
-            <div class="card"><div class="card-img"><img src="https://picsum.photos/id/1025/400/240" alt="火属性"></div><div class="card-content"><h3>火 · 烈焰焚天</h3><div class="tag-list"><span class="tag">灼烧伤害</span><span class="tag">爆发输出</span></div><p>代表密探：孙策、周瑜，高额单体伤害，附带灼烧持续伤害。</p><button class="btn-more">查看配置 →</button></div></div>
-            <div class="card"><div class="card-img"><img src="https://picsum.photos/id/1039/400/240" alt="水属性"></div><div class="card-content"><h3>水 · 润物无声</h3><div class="tag-list"><span class="tag">治疗回复</span><span class="tag">净化驱散</span></div><p>代表密探：华佗、史子渺，群体治疗，解除负面状态，保障生存。</p><button class="btn-more">查看配置 →</button></div></div>
-            <div class="card"><div class="card-img"><img src="https://picsum.photos/id/1058/400/240" alt="地属性"></div><div class="card-content"><h3>地 · 坚如磐石</h3><div class="tag-list"><span class="tag">防御减伤</span><span class="tag">嘲讽保护</span></div><p>代表密探：张飞、典韦，高防御高血量，吸引火力保护队友。</p><button class="btn-more">查看配置 →</button></div></div>
-            <div class="card"><div class="card-img"><img src="https://picsum.photos/id/1060/400/240" alt="阳属性"></div><div class="card-content"><h3>阳 · 圣光普照</h3><div class="tag-list"><span class="tag">复活增益</span><span class="tag">驱散净化</span></div><p>代表密探：左慈、刘备，复活队友，提供增益Buff，扭转战局。</p><button class="btn-more">查看配置 →</button></div></div>
-            <div class="card"><div class="card-img"><img src="https://picsum.photos/id/1074/400/240" alt="阴属性"></div><div class="card-content"><h3>阴 · 暗影诡谲</h3><div class="tag-list"><span class="tag">控制减益</span><span class="tag">爆发收割</span></div><p>代表密探：贾诩、张角，施加负面状态，高爆发收割残血。</p><button class="btn-more">查看配置 →</button></div></div>
+        <div id="cultivate" class="section-title"><span>✦ 密探培养 ✦</span></div>
+        <div class="grid-1">
+            <a href="spy_list.html" style="text-decoration: none;">
+                <div class="card-large">
+                    <div class="card-icon"><img src="shuxing/feng.png" alt="密探培养"></div>
+                    <div class="card-info">
+                        <h3>密探培养指南</h3>
+                        <p>命盘搭配、等级突破、材料收集，全方位培养攻略助你打造最强密探阵容</p>
+                        <button class="btn-more">进入 →</button>
+                    </div>
+                </div>
+            </a>
         </div>
 
-        <div id="team" class="section-title"><span>⚔️ 关卡配队 · 运筹帷幄 ⚔️</span></div>
-        <div class="grid-3">
-            <div class="card"><div class="card-img"><img src="https://picsum.photos/id/77/400/240" alt="地宫"></div><div class="card-content"><h3>地宫试炼 · 阴文珍藏</h3><p>孙策+傅融+华佗+陈登，利用孙策增伤，轻松应对Boss。</p><button class="btn-more">查看站位 →</button></div></div>
-            <div class="card"><div class="card-img"><img src="https://picsum.photos/id/90/400/240" alt="兰台"></div><div class="card-content"><h3>兰台 · 白鹄行动</h3><p>左慈+袁基+张飞，配合夏侯渊UP卡池，积分速刷。</p><button class="btn-more">查看配队 →</button></div></div>
-            <div class="card"><div class="card-img"><img src="https://picsum.photos/id/96/400/240" alt="主线"></div><div class="card-content"><h3>主线通用推图 · 新手友好</h3><p>刘辩+史子渺双治疗，杨修主C，轻松通关前六章。</p><button class="btn-more">获取阵容码 →</button></div></div>
+        <div id="team" class="section-title"><span>⚔️ 编队生成器 ⚔️</span></div>
+        <div class="grid-1">
+            <div class="card-large">
+                <div class="card-icon"><img src="shuxing/huo.png" alt="编队生成器"></div>
+                <div class="card-info">
+                    <h3>智能编队工具</h3>
+                    <p>根据你的密探库自动生成最优阵容，支持关卡适配、属性克制分析</p>
+                    <button class="btn-more">进入 →</button>
+                </div>
+            </div>
         </div>
 
-        <div id="events" class="section-title"><span>📜 楼中雅集 · 最新活动 📜</span></div>
-        <div class="grid-3">
-            <div class="card"><div class="card-img"><img src="https://picsum.photos/id/32/400/240" alt="哀牢"></div><div class="card-content"><h3>「去去指哀牢」限时</h3><p>5.21 – 6.3 孙策新装免费拿，天机符传*33</p><button class="btn-more">立即参与 →</button></div></div>
-            <div class="card"><div class="card-img"><img src="https://picsum.photos/id/124/400/240" alt="特训"></div><div class="card-content"><h3>密探特训 第22期</h3><p>每日任务领白金币，快速提升绣衣楼爵位</p><button class="btn-more">查看日程 →</button></div></div>
-            <div class="card"><div class="card-img"><img src="https://picsum.photos/id/100/400/240" alt="孙策初见日"></div><div class="card-content"><h3>江东来信 · 孙策初见日</h3><p>6.1 开启，限定恋念剧情+头像框</p><button class="btn-more">获取攻略 →</button></div></div>
+        <div id="guide" class="section-title"><span>📜 关卡攻略 📜</span></div>
+        <div class="grid-1">
+            <div class="card-large">
+                <div class="card-icon"><img src="shuxing/di.png" alt="关卡攻略"></div>
+                <div class="card-info">
+                    <h3>全关卡通关攻略</h3>
+                    <p>主线剧情、地宫试炼、兰台挑战，详尽攻略助你轻松通关</p>
+                    <button class="btn-more">进入 →</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="events" class="section-title"><span>📢 活动公告 📢</span></div>
+        <div class="event-list">
+            <div class="event-item">
+                <div class="event-date">5.21 - 6.3</div>
+                <div class="event-content">
+                    <h4>「去去指哀牢」限时活动</h4>
+                    <p>孙策新装免费获取，完成任务可获得天机符传*33</p>
+                </div>
+            </div>
+            <div class="event-item">
+                <div class="event-date">进行中</div>
+                <div class="event-content">
+                    <h4>密探特训 第22期</h4>
+                    <p>每日任务领取白金币，快速提升绣衣楼爵位</p>
+                </div>
+            </div>
+            <div class="event-item">
+                <div class="event-date">6.1 开启</div>
+                <div class="event-content">
+                    <h4>江东来信 · 孙策初见日</h4>
+                    <p>限定恋念剧情解锁，专属头像框等你来拿</p>
+                </div>
+            </div>
         </div>
         <div style="background:rgba(0,0,0,0.3); border-radius:32px; padding:12px; text-align:center; margin-bottom:20px;">
             <p><i class="fas fa-chart-line"></i> 限时卡池「铁弦千钧」「珠渊玉水」持续中</p>
@@ -105,7 +142,14 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.0/dist/umd/supabase.js"></script>
 <script src="index.js"></script>
+
+<!-- 固定底部版权栏 -->
+<div class="footer-bar">
+    <div class="footer-bar-content">
+        <p>非官方攻略站 · 图片版权归灵犀互娱所有 | 绣衣楼愿为殿下尽绵薄之力</p>
+    </div>
+</div>
 </body>
 </html>

@@ -158,17 +158,17 @@ body::before {
     z-index: 15;
 }
 
-/* 海报底部栏：与导航栏样式一致 */
+/* 底部版权栏：固定在所有页面底部 */
 .footer-bar {
-    position: absolute;
+    position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    background: linear-gradient(to top, rgba(8, 6, 10, 0.8), rgba(8, 6, 10, 0.4));
-    backdrop-filter: blur(8px);
+    background: linear-gradient(to top, rgba(8, 6, 10, 0.9), rgba(8, 6, 10, 0.6));
+    backdrop-filter: blur(12px);
     border-top: 1px solid rgba(198, 158, 98, 0.5);
-    padding: 16px 24px;
-    z-index: 15;
+    padding: 14px 24px;
+    z-index: 100;
 }
 .footer-bar-content {
     max-width: 1280px;
@@ -207,11 +207,17 @@ body::before {
 .nav-inner {
     max-width: 1280px;
     margin: 0 auto;
-    padding: 16px 24px;
+    padding: 16px 32px;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 32px;
 }
 
 .logo-area h1 {
@@ -252,6 +258,7 @@ nav a:hover {
     z-index: 2;
     background-color: #0e0c14;  /* 与body底色保持一致 */
     padding-top: 20px;
+    padding-bottom: 60px;
 }
 .container {
     max-width: 1280px;
@@ -283,6 +290,92 @@ nav a:hover {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 24px;
     margin-bottom: 64px;
+}
+.grid-1 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-bottom: 48px;
+}
+.card-large {
+    background: rgba(30, 25, 22, 0.7);
+    backdrop-filter: blur(4px);
+    border-radius: 28px;
+    border: 1px solid rgba(200, 160, 100, 0.3);
+    transition: 0.25s;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    padding: 24px;
+    gap: 24px;
+}
+.card-large:hover {
+    transform: translateY(-4px);
+    border-color: rgba(210, 160, 90, 0.6);
+}
+.card-icon {
+    width: 120px;
+    height: 120px;
+    flex-shrink: 0;
+    background: rgba(198, 158, 98, 0.1);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.card-icon img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+}
+.card-info {
+    flex: 1;
+}
+.card-info h3 {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+    color: #f6e2bd;
+}
+.card-info p {
+    color: #a89878;
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+.event-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 48px;
+}
+.event-item {
+    background: rgba(30, 25, 22, 0.6);
+    border-radius: 16px;
+    border: 1px solid rgba(200, 160, 100, 0.2);
+    padding: 20px;
+    display: flex;
+    gap: 20px;
+    transition: 0.2s;
+}
+.event-item:hover {
+    border-color: rgba(210, 160, 90, 0.5);
+}
+.event-date {
+    background: linear-gradient(135deg, #b68953, #9a6e3e);
+    color: #f5e6c8;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+.event-content h4 {
+    color: #f6e2bd;
+    margin-bottom: 4px;
+    font-size: 1.1rem;
+}
+.event-content p {
+    color: #a89878;
+    font-size: 0.9rem;
 }
 .card {
     background: rgba(30, 25, 22, 0.7);

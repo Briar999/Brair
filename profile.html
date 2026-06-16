@@ -22,18 +22,38 @@
             margin: 0 auto;
         }
         .user-avatar {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #b68953, #9a6e3e);
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+        }
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
+            object-fit: cover;
+            background: linear-gradient(135deg, #b68953, #9a6e3e);
+        }
+        .avatar-upload-btn {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: #b68953;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 20px;
+            cursor: pointer;
+            border: 2px solid #0a0c12;
         }
-        .user-avatar i {
-            font-size: 40px;
-            color: #f3e2b5;
+        .avatar-upload-btn i {
+            font-size: 14px;
+            color: #fff;
+        }
+        #avatarInput {
+            display: none;
         }
         .user-email {
             font-size: 1.2rem;
@@ -68,16 +88,21 @@
             <h1>绣衣楼·攻略集</h1>
             <p>代号鸢 | 如鸢 · 权谋深处见真情</p>
         </div>
-        <nav>
-            <ul>
-                <li><a href="index.html">首页</a></li>
-                <li><a href="index.html#cultivate">密探培养</a></li>
-                <li><a href="index.html#team">关卡配队</a></li>
-                <li><a href="index.html#events">楼中雅集</a></li>
-                <li><a href="profile.html">个人主页</a></li>
-                <li><a href="#" id="logoutBtn">退出</a></li>
-            </ul>
-        </nav>
+        <div class="nav-right">
+            <nav>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="index.html#cultivate">密探培养</a></li>
+                    <li><a href="index.html#team">编队生成器</a></li>
+                    <li><a href="index.html#guide">关卡攻略</a></li>
+                    <li><a href="index.html#events">活动公告</a></li>
+                    <li><a href="profile.html">个人主页</a></li>
+                </ul>
+            </nav>
+            <div id="navAvatarContainer">
+                <img id="navAvatar" src="" alt="头像" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid #b68953; cursor: pointer; display: none;">
+            </div>
+        </div>
     </div>
 </div>
 
@@ -85,68 +110,170 @@
     <div class="loading">加载中...</div>
 </div>
 
-<footer style="margin-top: 60px;">
+<footer style="margin-top: 60px; padding-bottom: 60px;">
     <p>绣衣楼愿为殿下尽绵薄之力</p>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<div class="footer-bar">
+    <div class="footer-bar-content">
+        <p>非官方攻略站 · 图片版权归灵犀互娱所有 | 绣衣楼愿为殿下尽绵薄之力</p>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.0/dist/umd/supabase.js"></script>
 <script>
-    const SUPABASE_URL = 'https://qwddwbwgichjhrxmswgk.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable_nq5d-vnTaJ46JA0MfY-qmQ_kUqPi-Sq';
+    var SUPABASE_URL = 'https://qwddwbwgichjhrxmswgk.supabase.co';
+    var SUPABASE_ANON_KEY = 'sb_publishable_nq5d-vnTaJ46JA0MfY-qmQ_kUqPi-Sq';
     
-    const _supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    
-    async function checkUser() {
-        const { data: { user } } = await _supabaseClient.auth.getUser();
-        const container = document.getElementById('profileContainer');
-        
-        if (!user) {
-            // 未登录：显示提示，不自动跳转
-            container.innerHTML = `
-                <div class="welcome-card">
-                    <div class="user-avatar"><i class="fas fa-user-circle"></i></div>
-                    <h2>未登录</h2>
-                    <p style="color: #8a7a64; margin: 20px 0;">请先登录后再访问个人主页</p>
-                    <a href="login.html" style="color: #dba46a;">前往登录 →</a>
-                </div>
-            `;
-            return;
+    var _supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+        auth: {
+            experimental: {
+                passkey: true
+            }
         }
-        
-        // 已登录：显示用户信息
-        const nickname = user.user_metadata?.username || user.email?.split('@')[0] || '殿下';
-        container.innerHTML = `
-            <div class="welcome-card">
-                <div class="user-avatar"><i class="fas fa-user-circle"></i></div>
-                <h2 id="welcomeTitle">绣衣楼 · ${escapeHtml(nickname)}</h2>
-                <div class="user-email">${escapeHtml(user.email || '未绑定邮箱')}</div>
-                <p style="color: #8a7a64; margin-top: 20px;">✨ 攻略上传功能正在建设中，敬请期待 ✨</p>
-                <button class="logout-btn" id="logoutBtnAction">退出登录</button>
-            </div>
-        `;
-        
-        document.getElementById('logoutBtnAction').addEventListener('click', async () => {
-            await _supabaseClient.auth.signOut();
-            window.location.href = 'index.html';
-        });
-    }
+    });
+    
+    var DEFAULT_AVATAR_URL = 'https://qwddwbwgichjhrxmswgk.supabase.co/storage/v1/object/public/avatars/1.png';
     
     function escapeHtml(str) {
         if (!str) return '';
         return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
     
+    async function uploadAvatar(file, userId) {
+        var fileExt = file.name.split('.').pop();
+        var fileName = userId + '/avatar.' + fileExt;
+        var uploadResult = await _supabaseClient.storage.from('avatars').upload(fileName, file, { upsert: true });
+        if (uploadResult.error) throw uploadResult.error;
+        var urlResult = _supabaseClient.storage.from('avatars').getPublicUrl(fileName);
+        return urlResult.data.publicUrl;
+    }
+    
+    async function updateUserAvatar(avatarUrl) {
+        var result = await _supabaseClient.auth.updateUser({ data: { avatar_url: avatarUrl } });
+        if (result.error) throw result.error;
+        return true;
+    }
+    
+    async function checkUser() {
+        var userResult = await _supabaseClient.auth.getUser();
+        var user = userResult.data.user;
+        var container = document.getElementById('profileContainer');
+        
+        if (!user) {
+            container.innerHTML = '<div class="welcome-card"><div class="user-avatar"><img src="' + DEFAULT_AVATAR_URL + '" alt="默认头像"></div><h2>未登录</h2><p style="color: #8a7a64; margin: 20px 0;">请先登录后再访问个人主页</p><a href="login.html" style="color: #dba46a;">前往登录 →</a></div>';
+            return;
+        }
+        
+        var avatarUrl = user.user_metadata?.avatar_url || DEFAULT_AVATAR_URL;
+        var nickname = user.user_metadata?.username || user.email?.split('@')[0] || '殿下';
+        
+        container.innerHTML = '<div class="welcome-card">' +
+            '<div class="user-avatar" id="avatarContainer">' +
+                '<img id="avatarImg" src="' + escapeHtml(avatarUrl) + '" alt="头像" onerror="this.src=\'' + DEFAULT_AVATAR_URL + '\'">' +
+                '<div class="avatar-upload-btn" id="uploadAvatarBtn"><i class="fas fa-camera"></i></div>' +
+                '<input type="file" id="avatarInput" accept="image/*">' +
+            '</div>' +
+            '<h2 id="welcomeTitle">绣衣楼 · ' + escapeHtml(nickname) + '</h2>' +
+            '<div class="user-email">' + escapeHtml(user.email || '未绑定邮箱') + '</div>' +
+            '<p style="color: #8a7a64; margin-top: 20px;">✨ 攻略上传功能建设中 ✨</p>' +
+            '<button class="logout-btn" id="logoutBtnAction">退出登录</button>' +
+            '<button class="logout-btn" id="registerPasskeyBtn" style="margin-top: 12px; border-color: #6c5ce7; color: #a29bfe;">🔑 绑定此设备（人脸/指纹登录）</button>' +
+        '</div>';
+        
+        var uploadBtn = document.getElementById('uploadAvatarBtn');
+        var avatarInput = document.getElementById('avatarInput');
+        var avatarImg = document.getElementById('avatarImg');
+        
+        if (uploadBtn) {
+            uploadBtn.onclick = function() { avatarInput.click(); };
+        }
+        
+        if (avatarInput) {
+            avatarInput.onchange = async function(e) {
+                var file = e.target.files[0];
+                if (!file) return;
+                if (!file.type.startsWith('image/')) { alert('请选择图片文件'); return; }
+                if (file.size > 2 * 1024 * 1024) { alert('图片大小不能超过2MB'); return; }
+                var originalSrc = avatarImg.src;
+                avatarImg.style.opacity = '0.5';
+                uploadBtn.style.pointerEvents = 'none';
+                try {
+                    var newUrl = await uploadAvatar(file, user.id);
+                    await updateUserAvatar(newUrl);
+                    avatarImg.src = newUrl;
+                    localStorage.setItem('avatarUpdated', Date.now().toString());
+                    alert('头像更新成功！');
+                } catch (err) {
+                    console.error('上传失败:', err);
+                    alert('头像上传失败：' + err.message);
+                    avatarImg.src = originalSrc;
+                } finally {
+                    avatarImg.style.opacity = '1';
+                    uploadBtn.style.pointerEvents = 'auto';
+                    avatarInput.value = '';
+                }
+            };
+        }
+        
+        var logoutBtn = document.getElementById('logoutBtnAction');
+        if (logoutBtn) {
+            logoutBtn.onclick = function() {
+                _supabaseClient.auth.signOut().then(function() {
+                    window.location.href = 'index.html';
+                });
+            };
+        }
+        
+        // ===== Passkey 绑定（一步式 API） =====
+        var passkeyBtn = document.getElementById('registerPasskeyBtn');
+        if (passkeyBtn) {
+            passkeyBtn.onclick = async function() {
+                console.log('✅ Passkey 绑定按钮被点击');
+                var userResult2 = await _supabaseClient.auth.getUser();
+                var currentUser = userResult2.data.user;
+                if (!currentUser) {
+                    alert('请先登录再绑定设备');
+                    return;
+                }
+                if (!window.PublicKeyCredential) {
+                    alert('您的浏览器不支持 WebAuthn');
+                    return;
+                }
+                try {
+                    console.log('开始注册 Passkey...');
+                    // ⭐ 一步式 API：直接调用 registerPasskey
+                    var result = await _supabaseClient.auth.registerPasskey({
+                        name: '当前设备'
+                    });
+                    if (result.error) throw result.error;
+                    console.log('注册成功:', result.data);
+                    alert('✅ Passkey 绑定成功！现在可以使用人脸/指纹登录了');
+                    location.reload();
+                } catch (error) {
+                    console.error('❌ 绑定失败:', error);
+                    alert('❌ 绑定失败: ' + error.message);
+                }
+            };
+            console.log('✅ Passkey 按钮事件已绑定');
+        }
+    }
+    
     checkUser();
     
-    // 导航栏退出按钮
-    const navLogoutBtn = document.getElementById('logoutBtn');
-    if (navLogoutBtn) {
-        navLogoutBtn.addEventListener('click', async (e) => {
-            e.preventDefault();
-            await _supabaseClient.auth.signOut();
-            window.location.href = 'index.html';
-        });
+    async function loadNavbarAvatar() {
+        var userResult = await _supabaseClient.auth.getUser();
+        var user = userResult.data.user;
+        var navAvatar = document.getElementById('navAvatar');
+        if (user && navAvatar) {
+            navAvatar.src = user.user_metadata?.avatar_url || DEFAULT_AVATAR_URL;
+            navAvatar.style.display = 'block';
+            navAvatar.onclick = function() { window.location.href = 'profile.html'; };
+        } else if (navAvatar) {
+            navAvatar.style.display = 'none';
+        }
     }
+    loadNavbarAvatar();
 </script>
 </body>
 </html>
