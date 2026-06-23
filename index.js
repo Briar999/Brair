@@ -108,3 +108,38 @@ window.addEventListener('storage', (e) => {
 });
 
 loadNavbarAvatar();
+// ========== 加载首页活动公告 ==========
+async function loadHomeEvents() {
+    const SUPABASE_URL = 'https://qwddwbwgichjhrxmswgk.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_nq5d-vnTaJ46JA0MfY-qmQ_kUqPi-Sq';
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    
+    const { data, error } = await supabaseClient
+        .from('events')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(3);
+    
+    const container = document.getElementById('homeEventList');
+    if (error || !data || data.length === 0) {
+        container.innerHTML = '<div class="event-item"><div class="event-content"><p style="color:#8a7a64;">暂无活动公告</p></div></div>';
+        return;
+    }
+    
+    container.innerHTML = data.map(event => `
+        <div class="event-item" onclick="window.location.href='event_detail.html?id=${event.id}'" style="cursor:pointer;">
+            <div class="event-date">${event.event_date || '即将开始'}</div>
+            <div class="event-content">
+                <h4>${event.title}</h4>
+                <p>${event.content ? event.content.substring(0, 50) + '...' : ''}</p>
+            </div>
+        </div>
+    `).join('');
+}
+
+// 在页面加载时调用
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof loadHomeEvents === 'function') {
+        loadHomeEvents();
+    }
+});

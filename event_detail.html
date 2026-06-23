@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>活动详情 · 绣衣楼攻略集</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="index.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.0/dist/umd/supabase.js"></script>
+    <style>
+        body { padding-top: 100px; padding-bottom: 80px; }
+        .container { max-width: 800px; margin: 0 auto; padding: 0 24px; }
+        .back-btn { color: #dba46a; cursor: pointer; margin-bottom: 20px; display: inline-block; }
+        .back-btn:hover { text-decoration: underline; }
+        .event-title { font-size: 2rem; color: #f6e2bd; margin-bottom: 8px; }
+        .event-meta { color: #8a7a64; font-size: 0.9rem; margin-bottom: 20px; }
+        .event-content { color: #d9cfb4; line-height: 1.8; margin-bottom: 40px; white-space: pre-wrap; }
+        .comments-section { margin-top: 40px; border-top: 1px solid rgba(200,160,100,0.3); padding-top: 30px; }
+        .comments-section h3 { color: #f6e2bd; font-size: 1.3rem; margin-bottom: 20px; }
+        .comment-form { display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px; }
+        .comment-form textarea { padding: 12px; border-radius: 12px; border: 1px solid rgba(200,160,100,0.3); background: rgba(20,18,22,0.8); color: #e9e4d4; resize: vertical; font-size: 0.95rem; }
+        .comment-form textarea:focus { outline: none; border-color: #dba46a; }
+        .comment-form button { padding: 10px 24px; background: linear-gradient(135deg, #b68953, #9a6e3e); border: none; border-radius: 30px; color: white; font-weight: 500; cursor: pointer; align-self: flex-end; }
+        .comment-form button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .sentiment-badge { font-size: 0.75rem; padding: 2px 12px; border-radius: 20px; margin-left: 8px; }
+        .sentiment-positive { background: rgba(80,200,120,0.2); color: #6bcb8a; border: 1px solid rgba(80,200,120,0.3); }
+        .sentiment-negative { background: rgba(220,80,60,0.2); color: #e68a6a; border: 1px solid rgba(220,80,60,0.3); }
+        .sentiment-neutral { background: rgba(200,200,200,0.2); color: #a0a0a0; border: 1px solid rgba(200,200,200,0.3); }
+        .comment-item { padding: 12px 0; border-bottom: 1px solid rgba(200,160,100,0.15); }
+        .comment-header { display: flex; justify-content: space-between; align-items: center; }
+        .comment-user { color: #dba46a; font-weight: 500; font-size: 0.9rem; }
+        .comment-time { color: #5a4a3a; font-size: 0.75rem; }
+        .comment-content { color: #d9cfb4; margin: 6px 0; }
+        .analyze-hint { color: #8a7a64; font-size: 0.8rem; margin-top: 4px; }
+        .empty-comments { color: #8a7a64; text-align: center; padding: 30px 0; }
+        .loading-sentiment { color: #8a7a64; font-size: 0.8rem; margin-left: 8px; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    </style>
+</head>
+<body>
+
+<div class="navbar-wrapper">
+    <div class="nav-inner">
+        <div class="logo-area">
+            <h1>绣衣楼·攻略集</h1>
+            <p>代号鸢 | 如鸢 · 权谋深处见真情</p>
+        </div>
+        <div class="nav-right">
+            <nav>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="spy_list.html">密探培养</a></li>
+                    <li><a href="#team">编队生成器</a></li>
+                    <li><a href="event_list.html">活动公告</a></li>
+                    <li><a href="profile.html">个人主页</a></li>
+                </ul>
+            </nav>
+            <div id="navAvatarContainer">
+                <img id="navAvatar" src="" alt="头像" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid #b68953;cursor:pointer;display:none;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <a href="index.html" class="back-btn">← 返回活动列表</a>
+    <div id="eventDetail">
+        <h1 class="event-title" id="eventTitle">加载中...</h1>
+        <div class="event-meta" id="eventMeta"></div>
+        <div class="event-content" id="eventContent"></div>
+    </div>
+
+    <div class="comments-section">
+        <h3>💬 玩家评论 <span id="sentimentStats" style="font-size:0.9rem;color:#8a7a64;font-weight:400;"></span></h3>
+
+        <!-- 发表评论 -->
+        <div class="comment-form">
+            <textarea id="commentInput" rows="3" placeholder="发表你的看法... (评论将自动进行情感分析)"></textarea>
+            <button id="submitCommentBtn">发表评论</button>
+        </div>
+
+        <!-- 评论列表 -->
+        <div id="commentList"></div>
+    </div>
+</div>
+
+<div class="footer-bar">
+    <div class="footer-bar-content">
+        <p>非官方攻略站 · 图片版权归灵犀互娱所有 | 绣衣楼愿为殿下尽绵薄之力</p>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const SUPABASE_URL = 'https://qwddwbwgichjhrxmswgk.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_nq5d-vnTaJ46JA0MfY-qmQ_kUqPi-Sq';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const urlParams = new URLSearchParams(location.search);
+        const eventId = urlParams.get('id');
+
+        let currentUser = null;
+        let loadingSentiment = false;
+
+        // ========== 情感分析函数（基于关键词） ==========
+        // 这是一个轻量级的规则引擎，在浏览器本地运行
+        // 也可以替换为 Transformers.js 或腾讯云 API
+        function analyzeSentiment(text) {
+            // 正面关键词
+            const positiveWords = [
+                '好', '棒', '赞', '优秀', '精彩', '期待', '喜欢', '爱', '良心', '福利', '免费',
+                'nice', 'good', 'great', 'awesome', 'excellent', 'love', 'amazing',
+                '完美', '太棒了', '很好', '非常棒', '真不错', '给力', '良心', '用心', '漂亮', '好看'
+            ];
+            // 负面关键词
+            const negativeWords = [
+                '差', '烂', '坑', '骗', '失望', '糟糕', '恶心', '难过', '伤心', '郁闷', '烦', '亏', '不值',
+                'bad', 'terrible', 'awful', 'disappointing', 'worst', 'hate', 'useless',
+                '太差了', '真烂', '垃圾', '无语', '唉', '服了', '搞什么', '拉胯'
+            ];
+
+            const lowerText = text.toLowerCase();
+            let score = 0;
+            let matchedWords = [];
+
+            positiveWords.forEach(word => {
+                if (lowerText.includes(word.toLowerCase())) {
+                    score += 0.3;
+                    matchedWords.push(word);
+                }
+            });
+
+            negativeWords.forEach(word => {
+                if (lowerText.includes(word.toLowerCase())) {
+                    score -= 0.4;
+                    matchedWords.push(word);
+                }
+            });
+
+            // 考虑语气副词
+            if (lowerText.includes('非常') || lowerText.includes('特别') || lowerText.includes('十分')) {
+                score *= 1.3;
+            }
+            if (lowerText.includes('有点') || lowerText.includes('稍微')) {
+                score *= 0.7;
+            }
+
+            // 考虑表情符号
+            if (text.includes('😊') || text.includes('❤️') || text.includes('👍') || text.includes('🎉') || text.includes('✨')) {
+                score += 0.2;
+            }
+            if (text.includes('😭') || text.includes('💔') || text.includes('😡') || text.includes('👎')) {
+                score -= 0.3;
+            }
+
+            // 限制范围
+            score = Math.max(-1, Math.min(1, score));
+
+            let sentiment = 'neutral';
+            if (score > 0.2) sentiment = 'positive';
+            else if (score < -0.1) sentiment = 'negative';
+
+            return { sentiment, score: Math.round(score * 100) };
+        }
+
+        // ========== 渲染评论 ==========
+        function renderComments(comments) {
+            const container = document.getElementById('commentList');
+            if (!comments || comments.length === 0) {
+                container.innerHTML = '<div class="empty-comments">暂无评论，来发表第一条吧！</div>';
+                updateStats(comments);
+                return;
+            }
+
+            // 按时间降序
+            const sorted = [...comments].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+            container.innerHTML = sorted.map(c => {
+                const sentimentClass = c.sentiment === 'positive' ? 'sentiment-positive' :
+                                     c.sentiment === 'negative' ? 'sentiment-negative' : 'sentiment-neutral';
+                const sentimentLabel = c.sentiment === 'positive' ? '😊 好评' :
+                                      c.sentiment === 'negative' ? '😞 差评' : '😐 中性';
+                return `
+                    <div class="comment-item">
+                        <div class="comment-header">
+                            <span class="comment-user">${c.user_email || '匿名玩家'}</span>
+                            <span>
+                                <span class="sentiment-badge ${sentimentClass}">${sentimentLabel}</span>
+                                <span class="comment-time">${new Date(c.created_at).toLocaleString()}</span>
+                            </span>
+                        </div>
+                        <div class="comment-content">${c.content}</div>
+                        <div class="analyze-hint">情感得分: ${c.sentiment_score !== undefined ? c.sentiment_score + '%' : '未分析'}</div>
+                    </div>
+                `;
+            }).join('');
+
+            updateStats(comments);
+        }
+
+        function updateStats(comments) {
+            const stats = document.getElementById('sentimentStats');
+            if (!comments || comments.length === 0) {
+                stats.textContent = '';
+                return;
+            }
+            const positive = comments.filter(c => c.sentiment === 'positive').length;
+            const negative = comments.filter(c => c.sentiment === 'negative').length;
+            const neutral = comments.filter(c => c.sentiment === 'neutral' || !c.sentiment).length;
+            stats.textContent = ` | 👍 好评 ${positive}  😞 差评 ${negative}  😐 中性 ${neutral}`;
+        }
+
+        // ========== 加载活动详情 ==========
+        async function loadEventDetail() {
+            if (!eventId) {
+                document.getElementById('eventTitle').textContent = '活动不存在';
+                return;
+            }
+            const { data, error } = await supabase
+                .from('events')
+                .select('*')
+                .eq('id', eventId)
+                .single();
+            if (error || !data) {
+                document.getElementById('eventTitle').textContent = '活动未找到';
+                return;
+            }
+            document.getElementById('eventTitle').textContent = data.title;
+            document.getElementById('eventMeta').textContent = `📅 ${data.event_date || '即将公布'}`;
+            document.getElementById('eventContent').textContent = data.content || '暂无详细内容';
+        }
+
+        // ========== 加载评论 ==========
+        async function loadComments() {
+            if (!eventId) return;
+            const { data, error } = await supabase
+                .from('comments')
+                .select('*')
+                .eq('event_id', eventId)
+                .order('created_at', { ascending: false });
+            if (error) {
+                console.error('加载评论失败', error);
+                return;
+            }
+            renderComments(data);
+        }
+
+        // ========== 提交评论 ==========
+        async function submitComment() {
+            const input = document.getElementById('commentInput');
+            const content = input.value.trim();
+            if (!content) {
+                alert('请输入评论内容');
+                return;
+            }
+
+            // 检查登录
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                alert('请先登录再发表评论');
+                return;
+            }
+
+            const btn = document.getElementById('submitCommentBtn');
+            btn.disabled = true;
+            btn.textContent = '分析中...';
+
+            try {
+                // 情感分析（在浏览器本地完成）
+                const result = analyzeSentiment(content);
+
+                // 保存到 Supabase
+                const { data, error } = await supabase
+                    .from('comments')
+                    .insert([{
+                        event_id: parseInt(eventId),
+                        user_id: user.id,
+                        user_email: user.email,
+                        content: content,
+                        sentiment: result.sentiment,
+                        sentiment_score: result.score
+                    }])
+                    .select();
+
+                if (error) throw error;
+
+                input.value = '';
+                alert('✅ 评论发表成功！情感评价: ' +
+                    (result.sentiment === 'positive' ? '😊 好评' :
+                     result.sentiment === 'negative' ? '😞 差评' : '😐 中性') +
+                    ' (得分: ' + result.score + '%)');
+
+                loadComments();
+            } catch (error) {
+                console.error('提交失败', error);
+                alert('评论提交失败: ' + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '发表评论';
+            }
+        }
+
+        // ========== 导航栏头像 ==========
+        async function loadNavbarAvatar() {
+            const { data: { user } } = await supabase.auth.getUser();
+            const navAvatar = document.getElementById('navAvatar');
+            if (user && navAvatar) {
+                navAvatar.src = user.user_metadata?.avatar_url || 'https://qwddwbwgichjhrxmswgk.supabase.co/storage/v1/object/public/avatars/1.png';
+                navAvatar.style.display = 'block';
+                navAvatar.onclick = () => window.location.href = 'profile.html';
+            }
+        }
+
+        // ========== 初始化 ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            loadEventDetail();
+            loadComments();
+            loadNavbarAvatar();
+
+            document.getElementById('submitCommentBtn').addEventListener('click', submitComment);
+            document.getElementById('commentInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && e.ctrlKey) {
+                    submitComment();
+                }
+            });
+        });
+
+    })();
+</script>
+</body>
+</html>
